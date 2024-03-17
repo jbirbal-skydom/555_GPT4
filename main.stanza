@@ -1,0 +1,124 @@
+; Define a 555 timer circuit with an LED in JITX using cap-strap and res-strap
+#use-added-syntax(jitx)
+defpackage main :
+  import core
+  import jitx
+  import jitx/commands
+  import ocdb/utils/generic-components
+  import helpers
+  import components/LED-maker-ROYGB
+
+; Define the shape/size of the board
+val board-shape = RoundedRectangle(20.0, 20.0, 0.25)
+
+
+; Top level design module
+
+pcb-module my-555-timer-led-circuit-using-strap :
+  ; Define power and ground nets
+  pin vcc
+  pin gnd
+  net POWER (vcc)
+  symbol(POWER) = ocdb/utils/symbols/supply-sym ; has to be placed after the definition of the net itself
+  net GND (gnd)
+  symbol(GND) = ocdb/utils/symbols/ground-sym ; has to be placed after the definition of the net itself
+
+
+
+  ; Instantiate the 555 timer
+  inst timer-555 :  components/IDCHIP/NE555/component
+
+  ; Correctly connect the VCC and GND pins of the NE555
+  net (POWER timer-555.VCC) ; Connect the VCC pin of the NE555 to the POWER net
+  net (GND timer-555.GND)   ; Ensure the GND pin of the NE555 is connected to the GND net
+
+
+  ; Correctly set up the astable circuit configuration
+  ; R1 from VCC to DISCH (Pin 7)
+  val r1 = res-strap(POWER, timer-555.DISCH, 68.0e3) ; R1 for charging path
+  
+  ; R2 from DISCH (Pin 7) to THRES (Pin 6), affecting both charging and discharging
+  val r2 = res-strap(timer-555.DISCH, timer-555.THRES, 150.0e3) ; R2 for both paths
+  
+  ; Capacitor from TRIG (Pin 2) to GND, also connected to THRES (Pin 6)
+  val c = cap-strap(timer-555.TRIG, GND, 10.0e-9) ; Timing capacitor
+
+  ; Tie TRIG to THRES to complete the feedback loop for astable operation
+  net (timer-555.TRIG, timer-555.THRES)
+
+  ; Ensure the RESET pin is high to disable reset functionality
+  net (POWER, timer-555.RESET)
+
+
+  val contCap = cap-strap(timer-555.CONT, GND, 10.0e-9) ; 0.01µF capacitor for noise stability
+
+  
+  ; Add an LED to indicate the output
+  inst status-led : components/LED-maker-ROYGB/module(BLUE, Toleranced(12.0, 0.05, 0.05)) ; Use led-component with color parameter
+  net (status-led.in timer-555.OUT)
+  net (status-led.out GND)
+
+
+
+; Module to run as a design
+public pcb-module blinking-555 :
+
+  inst timer : my-555-timer-led-circuit-using-strap
+
+
+  ; Write the board version on silkscreen
+  inst version-label  : ocdb/artwork/board-text/version-silkscreen("Version 2.0")
+  place(version-label) at loc(0.0, height(board-shape) / 2.0 - 2.0) on Bottom
+
+
+
+
+
+
+;     Set the design name     - a directory with this name will be generated under the "designs" directory
+;     the board           - a Board object
+;     [optional] rules    - the PCB design rules (if not givn default rules will be used)
+;     [optional] vendors  - Strings or AuthorizedVendors (if not give default vendors will be used)
+;     [optional] quantity - Minimum stock quantity the vendor should carry (if not give default quantity will be used)
+;setup-design(
+;  "jitx-design",
+;  ocdb/utils/defaults/default-board(ocdb/manufacturers/stackups/jlcpcb-jlc2313, board-shape)
+;)
+
+; Setup board
+set-current-design("555Timer") ; set which directly we will save to
+set-board(ocdb/utils/defaults/default-board(jlcpcb-jlc-2layer, board-shape))
+set-rules(ocdb/manufacturers/rules/jlcpcb-rules)
+
+
+; Set the schematic sheet size
+set-paper(ANSI-A)
+
+; Set the top level module (the module to be compile into a schematic and PCB)
+set-main-module(blinking-555)
+
+;pcb-board my-circuit-board :
+;  stackup: my-stackup
+;  boundary: board-shape
+;  signal-boundary: board-shape
+;
+;  layer(Silkscreen("F-silk", Top)) =
+;    Text("Board v1.2.3", 2.54, C, loc(0.0, 0.0))
+
+
+; Export to CAD
+; export-design() ; this will overwrite previous export, only run this if you don't need your previous Kicad/Altium layout work!
+; update-design()
+
+
+; View the results
+; set-board(my-circuit-board)
+; set-current-design("jitx-design")
+set-export-backend(`kicad)
+set-use-layout-groups()
+export-cad()
+
+view-board()
+view-schematic()
+view-design-explorer()
+;view-bom(BOM-STD)

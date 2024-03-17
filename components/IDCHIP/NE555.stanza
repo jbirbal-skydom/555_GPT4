@@ -1,0 +1,131 @@
+; This file is generated based on the parts database query below:")
+;   database-part(["manufacturer" => "IDCHIP", "mpn" => "NE555"])
+#use-added-syntax(jitx)
+defpackage components/IDCHIP/NE555 :
+  import core
+  import jitx
+  import jitx/commands
+  import ocdb/utils/box-symbol
+
+
+pcb-pad capsule-smd-pad :
+  name = "capsule-smd-pad"
+  type = SMD
+  shape = Capsule(0.588, 2.045, loc(0.0, 0.0))
+  layer(SolderMask(Top)) = Capsule(0.69, 2.147, loc(0.0, 0.0))
+  layer(Paste(Top)) = Capsule(0.588, 2.045, loc(0.0, 0.0))
+
+pcb-landpattern lp :
+  pad p[1] : capsule-smd-pad at loc(-1.905, -2.772) on Top
+  pad p[2] : capsule-smd-pad at loc(-0.635, -2.772) on Top
+  pad p[3] : capsule-smd-pad at loc(0.635, -2.772) on Top
+  pad p[4] : capsule-smd-pad at loc(1.905, -2.772) on Top
+  pad p[5] : capsule-smd-pad at loc(1.905, 2.773) on Top
+  pad p[6] : capsule-smd-pad at loc(0.635, 2.773) on Top
+  pad p[7] : capsule-smd-pad at loc(-0.635, 2.773) on Top
+  pad p[8] : capsule-smd-pad at loc(-1.905, 2.773) on Top
+
+  layer(Silkscreen("F-SilkS", Top)) = Text(">REF", 0.5, W, loc(-0.750, 4.478), "", TrueTypeFont, false, false)
+  layer(CustomLayer("Fab", Top)) = Text(">VALUE", 0.5, W, loc(-0.750, 3.478), "", TrueTypeFont, false, false)
+  layer(Silkscreen("F-SilkS", Top)) = Polyline(0.152, [
+    Point(-2.526, -1.521)
+    Point(-2.526, 1.522)
+    Point(2.526, 1.522)
+    Point(2.526, -1.521)
+    Point(-2.526, -1.521)])
+  layer(Silkscreen("F-SilkS", Top)) = Polyline(0.300, [
+    Arc(-1.905, -0.769, 0.150, 0.0, -360.000)])
+  layer(Silkscreen("F-SilkS", Top)) = Polyline(0.300, [
+    Arc(-2.651, -2.772, 0.150, 0.0, -360.000)])
+  layer(CustomLayer("Fab", Top)) = Polyline(0.300, [
+    Arc(-1.905, -3.400, 0.150, 0.0, -360.000)])
+  layer(CustomLayer("Fab", Top)) = Polyline(0.060, [
+    Arc(-2.450, -3.000, 0.030, 0.0, -360.000)])
+  layer(Courtyard(Top)) = Rectangle(5.052, 5.545)
+
+  model3d = Model3D("../../3d-models/jitx-64d12d7bb789d8dc4b778cc7.stp",
+    Vec3D(0.0, 0.0, 0.0),
+    Vec3D(1.000, 1.000, 1.000),
+    Vec3D(0.0, 0.0, 0.0),
+    [],
+    )
+
+pcb-symbol sym-NE555_C5125085 :
+  pin GND at Point(-12.700, 5.080) with :
+    direction = Left
+    length = 2.540
+    number-size = 1.000
+    name-size = 1.000
+  pin TRIG at Point(-12.700, 2.540) with :
+    direction = Left
+    length = 2.540
+    number-size = 1.000
+    name-size = 1.000
+  pin OUT at Point(-12.700, 0.0) with :
+    direction = Left
+    length = 2.540
+    number-size = 1.000
+    name-size = 1.000
+  pin RESET at Point(-12.700, -2.540) with :
+    direction = Left
+    length = 2.540
+    number-size = 1.000
+    name-size = 1.000
+  pin CONT at Point(10.160, -2.540) with :
+    direction = Right
+    length = 2.540
+    number-size = 1.000
+    name-size = 1.000
+  pin THRES at Point(10.160, 0.0) with :
+    direction = Right
+    length = 2.540
+    number-size = 1.000
+    name-size = 1.000
+  pin DISCH at Point(10.160, 2.540) with :
+    direction = Right
+    length = 2.540
+    number-size = 1.000
+    name-size = 1.000
+  pin VCC at Point(10.160, 5.080) with :
+    direction = Right
+    length = 2.540
+    number-size = 1.000
+    name-size = 1.000
+
+  layer("value") = Text(">VALUE", 0.7056, C, loc(0.0, 7.731), "", TrueTypeFont, false, false)
+  layer("reference") = Text(">REF", 0.7056, C, loc(0.0, 8.731), "", TrueTypeFont, false, false)
+  layer("foreground") = Rectangle(22.860, 12.700, loc(-1.270, 1.270))
+  layer("foreground") = Circle(-11.430, 6.350, 0.381)
+
+public pcb-component component :
+  name = "C5125085"
+  description = " SOP-8  Timers / Clock Oscillators ROHS"
+  manufacturer = "IDCHIP"
+  mpn = "NE555"
+  datasheet = "https://datasheet.lcsc.com/lcsc/2208091800_IDCHIP-NE555_C5125085.pdf"
+  reference-prefix = "U"
+  pin-properties :
+    [pin:Ref | pads:Ref ... | side:Dir | electrical-type:String | bank:Int]
+    [GND | p[1] | Left | "unspecified" | 0]
+    [TRIG | p[2] | Left | "unspecified" | 0]
+    [OUT | p[3] | Left | "unspecified" | 0]
+    [RESET | p[4] | Left | "unspecified" | 0]
+    [CONT | p[5] | Right | "unspecified" | 0]
+    [THRES | p[6] | Right | "unspecified" | 0]
+    [DISCH | p[7] | Right | "unspecified" | 0]
+    [VCC | p[8] | Right | "unspecified" | 0]
+
+  assign-landpattern(lp)
+  assign-symbol(sym-NE555_C5125085)
+
+  property(self.category) = "ic"
+  property(self.manufacturer_aliases) = ["IDCHIP"]
+  property(self.mpn_aliases) = ["NE555"]
+  property(self.cofactr_id) = "XXWW6905S7E9"
+  property(self.reference_prefix) = "U"
+  property(self.trust) = "low"
+  property(self.x) = 5.052
+  property(self.y) = 5.545
+  property(self.area) = 28.013
+  property(self.case) = "SOP-8"
+

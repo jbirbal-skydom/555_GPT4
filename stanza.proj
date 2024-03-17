@@ -1,0 +1,5 @@
+include "open-components-database/stanza.proj"
+package main defined-in "main.stanza"
+package helpers defined-in "helpers.stanza"
+package components/IDCHIP/NE555 defined-in "components/IDCHIP/NE555.stanza"
+packages components/* defined-in "components" ; notice the extra s
